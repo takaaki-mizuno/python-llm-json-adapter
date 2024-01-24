@@ -7,7 +7,8 @@ from typing import Dict, Optional
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 
-from .objects import Function
+from .exceptions import ExceededMaxRetryCountError, RetryableError
+from .objects import Response
 from .providers import Provider
 
 
@@ -16,10 +17,10 @@ class LLMJsonAdapter(object):
     def __init__(
         self,
         provider_name: str,
+        attributes: Dict = None,
+        language: str = 'en',
         max_retry_count: int = 3,
         logger: Optional[logging.Logger] = None,
-        language: str = 'en',
-        attributes: Dict = None,
     ):
         self._max_retry_count = max_retry_count
         self._logger = logger
@@ -52,19 +53,41 @@ class LLMJsonAdapter(object):
 
     async def generate_async(self,
                              prompt: str,
-                             function: Function,
-                             language: str = "en",
-                             act_as: Optional[str] = None) -> dict:
+                             function: Response,
+                             language: Optional[str] = "en",
+                             act_as: Optional[str] = None) -> Dict:
         if not self.validate_jsonschema(function.parameters):
             raise Exception('Invalid JSON schema')
 
-        return await self._provider.generate(prompt, function, language,
-                                             act_as)
+        if language is None:
+            language = self._language
+
+        retry_count = 0
+        latest_message = ""
+        while retry_count < self._max_retry_count:
+            retry_count += 1
+            try:
+                return await self._provider.generate(prompt, function,
+                                                     language, act_as)
+            except RetryableError as e:
+                if self._logger is not None:
+                    self._logger.error(f'Failed to generate response: {e}')
+                    latest_message = str(e)
+                continue
+
+        if self._logger is not None:
+            self._logger.error(
+                f'Exceeded max retry count: {self._max_retry_count} Latest exception is: {latest_message}'
+            )
+
+        raise ExceededMaxRetryCountError(
+            f'Exceeded max retry count: {self._max_retry_count} Latest exception is: {latest_message}'
+        )
 
     def generate(self,
                  prompt: str,
-                 function: Function,
-                 language: str = "en",
-                 act_as: Optional[str] = None) -> dict:
+                 function: Response,
+                 language: Optional[str] = None,
+                 act_as: Optional[str] = None) -> Dict:
         return asyncio.run(
             self.generate_async(prompt, function, language, act_as))

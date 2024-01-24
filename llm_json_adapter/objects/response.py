@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class Function(BaseModel):
+class Response(BaseModel):
     name: str
     description: str
     parameters: dict

@@ -6,7 +6,8 @@ from typing import Dict, Optional
 import google.generativeai as genai
 from google.generativeai.generative_models import GenerativeModel
 
-from ...objects import Function
+from ...exceptions import RetryableError
+from ...objects import Response
 from ..languages import languages
 from ..provider import Provider as BaseProvider
 
@@ -32,7 +33,7 @@ class Provider(BaseProvider):
 
     def generate_prompt(self,
                         prompt: str,
-                        function: Function,
+                        function: Response,
                         language: str = "en",
                         act_as: Optional[str] = None) -> str:
         generated_prompt = prompt + "\n\n"
@@ -64,7 +65,7 @@ class Provider(BaseProvider):
 
     async def generate(self,
                        prompt: str,
-                       function: Function,
+                       function: Response,
                        language: str = "en",
                        act_as: Optional[str] = None) -> Optional[Dict]:
 
@@ -75,9 +76,13 @@ class Provider(BaseProvider):
             act_as=act_as,
         )
 
-        response = self._client.generate_content(generated_prompt)
+        try:
+            response = self._client.generate_content(generated_prompt)
+        except Exception as e:
+            raise RetryableError(f"Google API exception: {e}")
 
         result = self.extract_json_block(response.text)
         if not isinstance(result, dict):
-            return None
+            raise RetryableError('Failed to extract json block')
+
         return result

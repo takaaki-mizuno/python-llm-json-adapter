@@ -4,7 +4,8 @@ from typing import Dict, Optional
 
 from openai import AsyncOpenAI
 
-from ...objects import Function
+from ...exceptions import RetryableError
+from ...objects import Response
 from ..languages import languages
 from ..provider import Provider as BaseProvider
 
@@ -30,7 +31,7 @@ class Provider(BaseProvider):
 
     async def generate(self,
                        prompt: str,
-                       function: Function,
+                       function: Response,
                        language: str = "en",
                        act_as: Optional[str] = None) -> Optional[Dict]:
 
@@ -53,23 +54,26 @@ class Provider(BaseProvider):
             "content": prompt,
         })
 
-        response = await self._client.chat.completions.create(
-            temperature=self.get_attribute('temperature', 0.67),
-            messages=messages,
-            tools=[{
-                "type": "function",
-                "function": function.model_dump(),
-            }],
-            tool_choice={
-                "type": "function",
-                "function": {
-                    "name": function.name,
+        try:
+            response = await self._client.chat.completions.create(
+                temperature=self.get_attribute('temperature', 0.67),
+                messages=messages,
+                tools=[{
+                    "type": "function",
+                    "function": function.model_dump(),
+                }],
+                tool_choice={
+                    "type": "function",
+                    "function": {
+                        "name": function.name,
+                    },
                 },
-            },
-            presence_penalty=self.get_attribute('presence_penalty', 0.0),
-            frequency_penalty=self.get_attribute('frequency_penalty', 0.0),
-            model=self.get_attribute('model', 'gpt-3.5-turbo-1106'),
-        )
+                presence_penalty=self.get_attribute('presence_penalty', 0.0),
+                frequency_penalty=self.get_attribute('frequency_penalty', 0.0),
+                model=self.get_attribute('model', 'gpt-3.5-turbo-1106'),
+            )
+        except Exception as e:
+            raise RetryableError(f"OpenAI API exception: {e}")
 
         for choice in response.choices:
             if (choice.message is not None
@@ -81,4 +85,4 @@ class Provider(BaseProvider):
                         arguments = function_response.function.arguments
                         return json.loads(arguments)
 
-        return None
+        raise RetryableError('Failed to extract json block')

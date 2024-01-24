@@ -15,11 +15,11 @@ pydantic = "^2.5.3"
 
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^7.4.4"
 toml = "^0.10.2"
+python-dotenv = "^1.0.0"
+pytest = "^7.4.4"
 yapf = "^0.40.2"
 isort = "^5.13.2"
-python-dotenv = "^1.0.0"
 
 [build-system]
 requires = ["poetry-core"]

@@ -16,7 +16,7 @@ def test_version():
 
 def test_create_openai_instance():
     adapter = LLMJsonAdapter(provider_name="openai", max_retry_count=3, attributes={
-        "api_key": "1234567890",
+        "api_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     })
     assert adapter is not None
 

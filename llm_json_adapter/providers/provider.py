@@ -1,7 +1,7 @@
 import logging
 from typing import Any, Dict, Optional
 
-from ..objects import Function
+from ..objects import Response
 from .languages import languages
 
 
@@ -22,7 +22,8 @@ class Provider(object):
             if attribute not in self._attributes:
                 if self._required_attributes[attribute] is None:
                     raise ValueError(f"Attribute {attribute} not set")
-            self._attributes[attribute] = self._required_attributes[attribute]
+                self._attributes[attribute] = self._required_attributes[
+                    attribute]
 
     def get_attribute(self, name: str, default_value: Any) -> Any:
         if self._attributes is None:
@@ -41,7 +42,7 @@ class Provider(object):
 
     async def generate(self,
                        prompt: str,
-                       function: Function,
+                       function: Response,
                        language: str = "en",
                        act_as: Optional[str] = None) -> Optional[Dict]:
         raise NotImplementedError()
