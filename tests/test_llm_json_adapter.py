@@ -20,3 +20,16 @@ def test_create_openai_instance():
     })
     assert adapter is not None
 
+
+def test_create_ollama_instance():
+    adapter = LLMJsonAdapter(provider_name="ollama", max_retry_count=3, attributes={
+    })
+    assert adapter is not None
+
+
+def test_create_bedrock_instance():
+    adapter = LLMJsonAdapter(provider_name="bedrock", max_retry_count=3, attributes={
+        'access_key_id': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        'secret_access_key': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    })
+    assert adapter is not None

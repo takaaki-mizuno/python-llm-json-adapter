@@ -1,4 +1,3 @@
-import json
 import logging
 from typing import Dict, Optional
 
@@ -8,13 +7,13 @@ from ollama import Client
 from ...exceptions import RetryableError
 from ...objects import Response
 from ...utilities import JsonUtility
-from ..languages import languages
+
 from ..provider import Provider as BaseProvider
 
 
 class Provider(BaseProvider):
     _required_attributes = {
-        'host': "http://localhost:11434",
+        'url': "http://localhost:11434",
         'model': 'llama3',
     }
 
@@ -26,7 +25,7 @@ class Provider(BaseProvider):
 
     def get_client(self) -> Client:
         return ollama.Client(host=self.get_attribute(
-            'host', default_value="http://localhost:11434"), )
+            'url', default_value="http://localhost:11434"), )
 
     async def generate(self,
                        prompt: str,

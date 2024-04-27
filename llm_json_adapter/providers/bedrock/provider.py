@@ -112,22 +112,17 @@ class Provider(BaseProvider):
 
             return {
                 "anthropic_version": "bedrock-2023-05-31",
-                "max_tokens": self.get_attribute('max_tokens',
-                                                 default_value=1024),
+                "max_tokens": self.get_attribute('max_tokens', default_value=1024),
                 "system": "\n".join(system_messages),
                 "messages": prompts,
             }
         elif provider == "meta":
             prompt = self.convert_to_llama_presentation(messages=prompt)
             return {
-                "prompt":
-                prompt,
-                "temperature":
-                0.5,
-                "top_p":
-                0.9,
-                "max_gen_len":
-                self.get_attribute('max_tokens', default_value=1024),
+                "prompt": prompt,
+                "temperature": 0.5,
+                "top_p": 0.9,
+                "max_gen_len": self.get_attribute('max_tokens', default_value=1024),
             }
         else:
             return {}

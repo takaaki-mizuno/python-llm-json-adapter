@@ -13,7 +13,7 @@ from ..provider import Provider as BaseProvider
 class Provider(BaseProvider):
     _required_attributes = {
         'api_key': None,
-        'model': 'gpt-3.5-turbo-1106',
+        'model': 'gpt-3.5-turbo',
         'temperature': 0.67,
         'presence_penalty': 0.0,
         'frequency_penalty': 0.0,
