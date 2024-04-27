@@ -45,7 +45,7 @@ from llm_json_adapter import LLMJsonAdapter, Response
 
 adapter = LLMJsonAdapter(provider_name="openai", max_retry_count=3, attributes={
     "api_key": "Your API Key",
-    "model": "text-davinci-003",
+    "model": "gpt-3.5-turbo",
 })
 result = adapter.generate(
     prompt="prompt",
