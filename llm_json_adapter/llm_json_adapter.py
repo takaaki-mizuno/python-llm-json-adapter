@@ -37,6 +37,14 @@ class LLMJsonAdapter(object):
             from .providers.openai import Provider as OpenAIProvider
             return OpenAIProvider(logger=self._logger,
                                   attributes=self._attributes)
+        elif provider_name.lower() == 'ollama':
+            from .providers.ollama import Provider as OllamaProvider
+            return OllamaProvider(logger=self._logger,
+                                  attributes=self._attributes)
+        elif provider_name.lower() == 'bedrock':
+            from .providers.bedrock import Provider as BedrockProvider
+            return BedrockProvider(logger=self._logger,
+                                   attributes=self._attributes)
         else:
             raise Exception(f'Unknown provider: {provider_name}')
 

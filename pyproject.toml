@@ -1,17 +1,38 @@
+[project]
+name = "llm-json-adapter"
+version = "0.1.0"
+authors = [
+    { name="Takaaki Mizuno" },
+]
+description = "Wrapper library to switch LLMs and get results in JSON"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/takaaki-mizuno/python-llm-json-adapter"
+Issues = "https://github.com/takaaki-mizuno/python-llm-json-adapter/issues"
+
 [tool.poetry]
 name = "llm-json-adapter"
 version = "0.1.0"
 description = ""
-authors = ["Takaaki Mizuno <takaaki.mizuno@gmail.com>"]
+authors = ["Takaaki Mizuno"]
 readme = "README.md"
 packages = [{include = "llm_json_adapter"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-openai = "^1.7.1"
-google-generativeai = "^0.3.2"
+openai = "^1.12.0"
+google-generativeai = "^0.5.2"
 jsonschema = "^4.20.0"
 pydantic = "^2.5.3"
+ollama = "^0.1.9"
+boto3 = "^1.34.93"
 
 
 [tool.poetry.group.dev.dependencies]

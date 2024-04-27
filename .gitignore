@@ -34,5 +34,6 @@ README.rst
 .pypirc
 
 .env
-main.py
+main*.py
+prompt.txt
 
