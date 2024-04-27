@@ -3,4 +3,4 @@ from .objects import Response
 
 __all__ = ['LLMJsonAdapter', "Response", "__version__"]
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
